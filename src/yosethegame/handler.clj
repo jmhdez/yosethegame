@@ -7,9 +7,7 @@
 
 (defroutes app-routes
   (GET "/" [] "Hello Yose")
-  (GET "/ping" [] (response {:alive true}))
-  (route/resources "/")
-  (route/not-found "Not Found"))
+  (GET "/ping" [] (response {:alive true})))
 
 (def app
   (handler/site (-> app-routes
