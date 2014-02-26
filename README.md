@@ -1,6 +1,6 @@
 # yosethegame
 
-FIXME
+Simple clojure web app to play with [yosethegame](www.yosethegame.com)
 
 ## Prerequisites
 
