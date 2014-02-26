@@ -1,6 +1,5 @@
 (ns yosethegame.handler
   (:use compojure.core)
-  (:use hiccup.core)
   (:use ring.middleware.json)
   (:use ring.util.response)
   (:require [compojure.handler :as handler]
