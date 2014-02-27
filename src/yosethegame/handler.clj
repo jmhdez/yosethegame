@@ -18,10 +18,9 @@
   (response {:alive true}))
 
 (defn prime-factors [n]
-  (let [factors (map (fn [_] 2)
-                     (take-while #(not= % n) (iterate #(* 2 %) 1)))]
+  (let [power-of-two (.indexOf (iterate #(* 2 %) 1) n)]
      (response {:number n
-                :decomposition factors})))
+                :decomposition (repeat power-of-two 2)})))
 
 (defroutes app-routes
   (GET "/" [] (home))
