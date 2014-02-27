@@ -11,7 +11,8 @@
   (html5
    [:body
     [:h1 "Hello Yose"]
-    [:a#contact-me-link {:href "#"}  "Contact me" ]]))
+    [:a#contact-me-link {:href "#"}  "Contact me" ]
+    [:a#ping-challenge-link {:href "/ping"} "Ping challenge"]]))
 
 (defroutes app-routes
   (GET "/" [] (home))
