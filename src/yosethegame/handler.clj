@@ -22,10 +22,16 @@
      (response {:number n
                 :decomposition (repeat power-of-two 2)})))
 
+(defn ensure-number [input fn]
+  (if (re-seq #"\d" input)
+    (fn (read-string input))
+    (response {:number input
+               :error "not a number"})))
+
 (defroutes app-routes
   (GET "/" [] (home))
   (GET "/ping" [] (ping))
-  (GET "/primeFactors" {{n "number"} :query-params} (prime-factors (read-string n))))
+  (GET "/primeFactors" {{n "number"} :query-params} (ensure-number n  prime-factors)))
 
 (def app
   (handler/site (-> app-routes
