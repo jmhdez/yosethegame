@@ -7,6 +7,19 @@
   (:require [compojure.handler :as handler]
             [compojure.route :as route]))
 
+;; Helpers
+
+(defn factorize [number]
+  (loop [n number
+         f 2
+         factors []]
+    (cond
+     (= number (apply * factors)) (into '() factors)
+     (zero? (rem n f)) (recur (/ n f) f (cons f factors))
+     :else (recur n (inc f) factors))))
+
+;; Views
+
 (defn home []
   (html5
    [:body
@@ -17,21 +30,22 @@
 (defn ping []
   (response {:alive true}))
 
-(defn prime-factors [n]
-  (let [power-of-two (.indexOf (iterate #(* 2 %) 1) n)]
-     (response {:number n
-                :decomposition (repeat power-of-two 2)})))
-
-(defn ensure-number [input fn]
-  (if (re-seq #"\d" input)
-    (fn (read-string input))
+(defn prime-factors [input]
+  (if (re-seq #"^\d+$" input)
+    (let [n (read-string input)]
+      (response {:number n
+                 :decomposition (factorize n)}))
     (response {:number input
                :error "not a number"})))
+
+;; Routes
 
 (defroutes app-routes
   (GET "/" [] (home))
   (GET "/ping" [] (ping))
-  (GET "/primeFactors" {{n "number"} :query-params} (ensure-number n  prime-factors)))
+  (GET "/primeFactors" {{n "number"} :query-params} (prime-factors n)))
+
+;; App
 
 (def app
   (handler/site (-> app-routes
