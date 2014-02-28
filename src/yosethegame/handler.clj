@@ -18,6 +18,16 @@
      (zero? (rem n f)) (recur (/ n f) f (cons f factors))
      :else (recur n (inc f) factors))))
 
+(defn reject-invalid-number [next-fn input]
+  (if (re-seq #"^\d+$" input)
+    (next-fn (read-string input))
+    (response {:number input :error "not a number"})))
+
+(defn reject-big-number [next-fn number]
+  (if (<= number 1e6)
+    (next-fn number)
+    (response {:number number :error "too big number (>1e6)"})))
+
 ;; Views
 
 (defn home []
@@ -30,20 +40,16 @@
 (defn ping []
   (response {:alive true}))
 
-(defn prime-factors [input]
-  (if (re-seq #"^\d+$" input)
-    (let [n (read-string input)]
-      (response {:number n
-                 :decomposition (factorize n)}))
-    (response {:number input
-               :error "not a number"})))
+(defn prime-factors [n]
+  (response {:number n :decomposition (factorize n)}))
 
 ;; Routes
 
 (defroutes app-routes
   (GET "/" [] (home))
   (GET "/ping" [] (ping))
-  (GET "/primeFactors" {{n "number"} :query-params} (prime-factors n)))
+  (GET "/primeFactors" {{input "number"} :query-params}
+       (reject-invalid-number (partial reject-big-number prime-factors) input)))
 
 ;; App
 
